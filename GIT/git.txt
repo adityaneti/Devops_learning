@@ -1,0 +1,180 @@
+git is a distributed version control system and not a central version control system
+git --version # to check the version of the git
+configuring git	
+	we can define the settings in three levels
+	   1. system level    All users
+	   2. global level     All repositories of the current user
+	   3. local level     the current repository
+        git config --global user.name "aditya shashanka"
+        git config --global user.email adityashashanka@gmail.com  #here we don't have a spance in email so we don't need double quotes
+        by default you will get vim editor but you can config your editor if you don't loke vim
+        git config --global core.editor "code --wait" # only works when the vs code pops up when you type code and enter in you terminal
+        git config --global -e # to open global settings in default editor
+        now let's configure how git should handle end of lines. On windows end of lines are marked with two special charectrs chariage return(\r) and line feed(/n) on mac and linux end of lines are indicated with line feed i.e /n to prevent this we have to configure a property called core.autocrlf which will atomatically add and remove them depending on os
+        git config --global core.autocrlf input #shoulb be set to true if it's windows and input if it's mac/linux 
+         git config --help # to get the info about the config command
+         git config -h # gives us a short symmery of the command and it's options
+================================================================================================================================
+2.0
+let's create a directory for our project
+let's create a directory called moon and go into it
+we need to initiate a new repository to do that we type
+  git init
+git workflow:
+	When we are ready to upload the changes we  put it into staging area/index and review our changes then we will make a commit
+	eg: lets create 3 files named file1, file2, file3
+	we use add command to add them to staging area and review it and then everything is good so we commit it with the command
+	git commit -m "initial commit"
+	after you commit the staging area doen't become empty it will still contain the previous files
+	if you have two files f1 and f2 if you delete the single file f2 and make changes with the file f1 and add only f1 to the staging area and commit it the new f1 file and the old f2 file gets into the repository. to delete the file f2 from the staging area we need to add the file2 to the staging area and when there is no file named f2 it will reailise that git needs to delete the file from the staging area
+  git status # to see the status
+  git add file_name.txt
+  git add . # to add all the files in the folder to the repository
+ git commit -am "commiting without staging"
+ git commit -a -m "commiting without staging in another way"
+ git ls-fiels #to see the files in our staging area
+ to remove a file from working directory and staging area we need to type
+ git rm *.txt
+ .gitignore is used for those files for git to ignore
+ you need to list all the file names that you dont want to be in the repository
+ git status -s # to see the short status
+ git diff --staged #shows the difference between files from previous staging area files to present
+ git diff #shows the difference between the code on staging area and directory
+ git config --global diff.tool vscode
+ git config --global diff.tool vscode
+ git config --global difftool.vscode.cmd "code --wait --diff $LOCAL $REMOTE"
+ #when we use wait it will wait until we close the vscode  $LOCAL $ REMOTE are place holders
+ git config --global -e
+git difftool
+git difftrool --stage
+git log #to view our history of commits
+git log --oneline #shows short summery of the commit
+git log --oneline --reverse #to reverse the order of the logs
+to see the content of the commmit we use show command
+git show COMMIT_UNIQ_IDENTIFIER
+insted of commit unique identifier we can also use the head pointer
+git show HEAD
+git show HEAD~1 # to show one step back commit of head
+to see exact version stored in a perticular commit without seeing diff we use :.gitignore
+to see all the files and directories in a commit
+git ls-tree HEAD
+files are represented using blobs and directories are represented using trees
+we can also use git show to see a perticular file in a commit with it's id
+git objects:
+  commits
+  blobs
+  trees
+  tags
+ git restore --staged file1.js
+ to restore the files from the previous  staging area
+ git restore --staged .
+ Discard the staging area
+   git restore file1 
+   git restore . 
+   # restore all files from staging area
+   git clean 
+   # to remove all the untracked files from the working directory
+   git rm file_name
+   #to remove the file from working directory and staging area
+   
+   after removing the file from staging area and working directoy let's say we have committed it
+   to resore the file lets do this
+   lets see the logs 
+   git log --oneline
+   git restore --source=HEAD~1 file_name
+   now see git status -s to see the untracked files which means it directly restores the file on to current working directory but not    	 	to  the staging area.
+================================================================================================================================
+3.
+ git log  to view the commits
+  git log --oneline
+  git log --oneline --stat
+  #to view all the files have been changed   
+  git log --stat 
+  to see the difference we use git log --oneline --patch
+ in real time we have thousands of files and it's tough to see the commits with git log. we can filter commits on different things
+ git log --oneline -3
+ #to see the last three commits
+ git log --oneline --author="adityashashanka"
+ git log --oneline --after="2022-11-23"
+ git log --oneline --before="2022-22-23"
+ git log --oneline --after="yesterday"
+ git log --oneline --after="one week ago"
+ git log --oneline --grep="GUI"
+ #filters all the commits with the word GUI in the commit message
+ git log --oneline -S"OBJECTIVES"
+ #this command will give the results of all the commits that have word OBJECTIVES in it
+ to have the commits only from the perticular range  we use command 
+ git log --oneline fb0d184..edb3984
+ fb0d184 and edb3984 are the commit ids from and to commit ids
+ if you want  to find all the commits that modTified perticular file we use the following commands
+ git log --oneline filename.txt
+ if the git finds the file name ambigeous the use the following command
+ git log --oneline -- filename.txt
+ 
+ format the output
+ git log --pretty=format:"hello%an" #an means author name. this command prints out hello aditya for all the commits
+ git log --pretty=format:"%an commited %H"
+ git log --pretty=format:"%an commited %h"
+ to see a perticular commit
+ git show commitid
+ git show HEAD
+ git show HEAD~1
+ to see the file version that is stored in perticular commit lets say in two commits before HEAD i.e HEAD~2
+ git show HEAD~2:filename.txt
+ git show HEAD~2 --name-status
+ #
+ to see the changes across two commits do this 
+ git diff HEAD HEAD~2
+ git diff HEAD HEAD~2 filename.txt
+ git diff HEAD HEAD~2 --name-only
+ #to see the list of file names that are changed.
+ 
+ TO RESTORE OUR WORKING DIRECTORY TO A PERTICULAR COMMIT
+ git checkout commit_id
+ head and master points to the latest commit we create 
+ when we checkout a perticular commit the head will move to that perticular commit. this is what we call detached head
+ head is not pointing to a latest commit anymore when we checkout
+ after we checkout we shouldn't create a new commit. we should only view our code
+ if we create a commit at somepoint we should get back the head pointer to the branch and then the commit becomes non reachable(check the diagram 1.2 from this folder)
+ we did git checkout so now head is in the commit stage
+ if we not type git log --oneline we will only see the commits we did before that commit and we wont see the master 
+ to view all we type
+ git log --oneline --all
+ to get the HEAD back to the MASTER we type
+ git checkout MASTER
+ finding bugs using bisect
+ git bisect start
+ to find the bad commit
+ git bisect bad
+ git shortlog #to see all the people contributed to our project
+ to restore a file from a perticular commit
+ git checkout a643k46 toc.txt
+blame tool to find the author of the perticular file
+git blame audiance.txt
+
+tags:
+ lets say the last commit represents first version of our software so we can give it a tag or custom label
+  git tag v1.0 commit_id
+  we can also checkout a commit using its tag
+  git checkout v1.0
+  to see all the tags we type git tag
+  to create an annotated tag we must do the following
+  git tag -a v1.1 -m "my msg 1.1"
+  with annotated tag we can assosiate a msg with that tag
+  if we now type git tag we won't see any msg with that tag 1.1
+  to see that msg we must type the command git tag -n
+  git show 2.2
+  git tag -d tag_name # to delete a tag
+  skipped 3.16 and 3.17
+  
+  ================================================================================================================================
+  4.Branching
+  git works differently from subversion. when we create a new branch in subversion it copies all the files from the mater which makes it slow
+  git works differently it works with pointers master is a pointer to the commit
+  if we create a new branch new pointer is created at master snapshot
+  git knows which pointer we are working on with HEAD
+  
+  
+ 
+   
+ 
